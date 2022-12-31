@@ -1,4 +1,3 @@
-import React, { useEffect, useReducer, useState } from "react";
 import { Helmet } from "react-helmet";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
@@ -84,7 +83,7 @@ export const Coins = () => {
                 {data?.slice(0, 100).map(coin =>
                     <Coin key={coin.id}>
                         <Link to={{
-                            pathname: `/${coin.id}`,
+                            pathname: `${process.env.PUBLIC_URL}/${coin.id}`,
                             state: { name: coin.name }
                         }}>
                             <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />

@@ -1,4 +1,3 @@
-import { useEffect, useReducer, useState } from "react";
 import { useQuery } from "react-query";
 import { Link, Route, Switch, useLocation, useParams, useRouteMatch } from "react-router-dom"
 import styled from "styled-components";
@@ -6,6 +5,7 @@ import { fetchCoinInfo, fetchTickers } from "./api";
 import { Chart } from "./Chart";
 import { Price } from "./Price";
 import { Helmet } from 'react-helmet'
+import { Button } from "@mui/material";
 
 
 const Container = styled.div`
@@ -198,8 +198,8 @@ const Tab = styled.span<{ isActive: boolean }>`
 export const Coin = () => {
     const { coinId } = useParams<RouteParams>()
     const { state } = useLocation<RouteState>();
-    const priceMatch = useRouteMatch("/:coinId/price");
-    const chartMatch = useRouteMatch("/:coinid/chart")
+    const priceMatch = useRouteMatch(`${process.env.PUBLIC_URL}/:coinId/price`);
+    const chartMatch = useRouteMatch(`${process.env.PUBLIC_URL}/:coinid/chart`);
 
     const { isLoading: infoLoading, data: info } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
     const { isLoading: tickersLoading, data: tickers } = useQuery<PriceData>(["tickers", coinId], () => fetchTickers(coinId), { refetchInterval: 5000 })
@@ -217,6 +217,9 @@ export const Coin = () => {
                 loading ? <Loader>Loading...</Loader>
                     :
                     <>
+                        <Link to={`${process.env.PUBLIC_URL}/`} >
+                            <Button variant="text" color="secondary">Back</Button>
+                        </Link>
                         <Overview>
                             <OverviewItem>
                                 <span>Rank:</span>
@@ -244,28 +247,28 @@ export const Coin = () => {
                         </Overview>
                         <Tabs>
                             <Tab isActive={chartMatch !== null}>
-                                <Link to={`/${coinId}/chart`}>
+                                <Link to={`${process.env.PUBLIC_URL}/${coinId}/chart`}>
                                     Chart
                                 </Link>
                             </Tab>
                             <Tab isActive={priceMatch !== null}>
-                                <Link to={`/${coinId}/price`}>
+                                <Link to={`${process.env.PUBLIC_URL}/${coinId}/price`}>
                                     Price
                                 </Link>
                             </Tab>
                         </Tabs>
 
                         <Switch>
-                            <Route path={`/${coinId}/price`}>
-                                <Price />
+                            <Route path={`${process.env.PUBLIC_URL}/${coinId}/price`}>
+                                <Price coinId={coinId} />
                             </Route >
-                            <Route path={`/${coinId}/chart`}>
+                            <Route path={`${process.env.PUBLIC_URL}/${coinId}/chart`}>
                                 <Chart coinId={coinId} />
                             </Route>
                         </Switch>
                     </>
             }
-        </Container>
+        </Container >
     )
 }
 
